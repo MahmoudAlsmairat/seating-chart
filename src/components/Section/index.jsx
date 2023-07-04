@@ -36,6 +36,11 @@ export default function Section({ seats, id }) {
   const width = divElement?.offsetWidth;
   const height = divElement?.offsetHeight;
   console.log("width", width, "height", height);
+  const arrayOfSeats = new Array(seats?.numOfRows)
+    .fill()
+    .map((_, rowIndex) =>
+      new Array(seats?.seatsPerRow).fill().map((_, columnIndex) => ({}))
+    );
   return (
     <>
       <Moveable
@@ -65,7 +70,7 @@ export default function Section({ seats, id }) {
         className={`target${id} ${container}`}
         onClick={() => setShowMovable((prev) => !prev)}
       >
-        {seats?.map((row, idx) => {
+        {arrayOfSeats?.map((row, idx) => {
           return (
             <div key={idx} className={sectionRow} id={id}>
               {row?.map((colum, index) => {
