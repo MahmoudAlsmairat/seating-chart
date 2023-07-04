@@ -29,16 +29,6 @@ export default function Form({
           placeholder="column"
         />
       </div>
-      <div className={inputWrapper}>
-        <label>Sections Number</label>
-        <input
-          name="sectionsNum"
-          type="number"
-          placeholder="section"
-          value={formData?.sectionsNum}
-          onChange={changeHandler}
-        />
-      </div>
       <div className={actionWrapper}>
         <button onClick={onClickHandler}>Generate</button>
       </div>

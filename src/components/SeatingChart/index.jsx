@@ -10,23 +10,28 @@ export default function SeatingChart() {
     setFormData((prev) => ({ ...prev, [name]: +value }));
   };
   const onClickHandler = () => {
-    const { sectionsNum, rowsNum, columnsNum } = formData;
-    const array2d = new Array(sectionsNum)
-      .fill()
-      .map((_, sectionIndex) =>
-        new Array(rowsNum)
-          .fill()
-          .map((_, rowIndex) =>
-            new Array(columnsNum)
-              .fill()
-              .map((_, columnIndex) => ({ picked: false }))
-          )
-      );
+    const { rowsNum, columnsNum } = formData;
 
-    setSections(array2d);
+    setSections((prev) => [
+      ...prev,
+      {
+        position: {
+          top: 151,
+          rotate: 151,
+          left: 121,
+        },
+
+        id: "",
+        type: "table or group",
+        ticketName: "",
+        sectionName: "",
+        ticketId: 1,
+        numOfRows: rowsNum,
+        seatsPerRow: columnsNum,
+      },
+    ]);
   };
 
-  console.log(sections);
   return (
     <div>
       <Form
