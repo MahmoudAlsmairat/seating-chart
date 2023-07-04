@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import Seat from "../Seat";
 import Moveable from "react-moveable";
-
+import SelectComponent from "../Select";
 import styles from "./styles.module.css";
 
 const { container, sectionRow, seat } = styles;
-export default function Section({ seats, id }) {
+export default function Section({ seats, id, setSections = () => {} }) {
   const [showMovable, setShowMovable] = useState(false);
   const handleDragStart = ({ target, clientX, clientY }) => {
     console.log("onDragStart", target);
@@ -41,6 +41,23 @@ export default function Section({ seats, id }) {
     .map((_, rowIndex) =>
       new Array(seats?.seatsPerRow).fill().map((_, columnIndex) => ({}))
     );
+
+  const options = [
+    { value: "Class A", label: "Class A" },
+    { value: "Class B", label: "Class B" },
+    { value: "Class C", label: "Class C" },
+  ];
+
+  const handleChange = (value) => {
+    // Handle the selected value
+    setSections((prev) => {
+      const clonedSections = [...prev];
+      const currentSection = { ...clonedSections[id], ticketName: value };
+      clonedSections[id] = currentSection;
+      return [...clonedSections];
+    });
+    console.log("Selected value:", value);
+  };
   return (
     <>
       <Moveable
@@ -66,19 +83,27 @@ export default function Section({ seats, id }) {
         pinchable={false}
       />
 
-      <div
-        className={`target${id} ${container}`}
-        onClick={() => setShowMovable((prev) => !prev)}
-      >
+      <div className={`target${id} ${container}`}>
+        <span>{seats?.ticketName}</span>
         {arrayOfSeats?.map((row, idx) => {
           return (
-            <div key={idx} className={sectionRow} id={id}>
+            <div
+              key={idx}
+              className={sectionRow}
+              id={id}
+              onClick={() => setShowMovable((prev) => !prev)}
+            >
               {row?.map((colum, index) => {
                 return <Seat key={index} />;
               })}
             </div>
           );
         })}
+        <SelectComponent
+          options={options}
+          defaultValue="Select an Ticket"
+          onChange={handleChange}
+        />
       </div>
     </>
   );
