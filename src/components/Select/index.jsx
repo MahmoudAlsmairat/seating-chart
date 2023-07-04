@@ -1,23 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const SelectComponent = ({ options, defaultValue, onChange }) => {
-  const [selectedValue, setSelectedValue] = useState(defaultValue);
+  const defaultOption = {
+    id: 0,
+    value: "Default",
+    label: `${defaultValue}`,
+  };
 
-  const handleChange = (event) => {
-    const value = event.target.value;
-    setSelectedValue(value);
-    onChange(value);
+  const [selectedOption, setSelectedOption] = useState(defaultOption);
+
+  const handleSelectChange = (event) => {
+    const selectedIndex = event.target.selectedIndex;
+    const selectedOption = options[selectedIndex - 1];
+    setSelectedOption(selectedOption);
+    onChange(selectedOption.id, selectedOption.value);
   };
 
   return (
-    <select value={selectedValue} onChange={handleChange}>
-      <option value="">{defaultValue}</option>
-      {options.map((option) => (
-        <option key={option.value} value={option.value}>
-          {option.label}
+    <div>
+      <select onChange={handleSelectChange} value={selectedOption.value}>
+        <option value={defaultOption.value} disabled>
+          {defaultOption.label}
         </option>
-      ))}
-    </select>
+        {options.map((option) => (
+          <option key={option.idTicket} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 };
 
