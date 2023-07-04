@@ -1,0 +1,24 @@
+.form{
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  width: 20%;
+  gap: 16px;
+  border: 1px solid black;
+  margin: auto;
+}
+.inputWrapper{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.actionWrapper{
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+input{
+  width: 100%;
+}
