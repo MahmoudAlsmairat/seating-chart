@@ -1,10 +1,18 @@
 
 .container{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+padding: 10px;
 }
-.sectionsContainer{
-  margin: 15px;
+
+.centerContainer {
+  position: relative;
+  margin-top: 50px;
+}
+
+.centerContent {
+  position: absolute;
+  left: 1%;
+}
+.parentContainer{
+  background-color: #fbfbfb !important;
+  border: 1.5px solid #ccc
 }

@@ -1,15 +1,37 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Seat from "../Seat";
 import Moveable from "react-moveable";
 import { Rnd } from "react-rnd";
 import SelectComponent from "../Select";
 import styles from "./styles.module.css";
 
-const { container, sectionRow, seat } = styles;
-export default function Section({ seats, id, setSections = () => {} }) {
+const { container, sectionRow } = styles;
+export default function Section({
+  seats,
+  id,
+  setSections = () => {},
+  sectionData,
+}) {
   const [showMovable, setShowMovable] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [rotationAngle, setRotationAngle] = useState(0);
+  const [rotationDeg, setRotationDeg] = useState(0);
+  const [translateX, setTranslateX] = useState(0);
+  const [translateY, setTranslateY] = useState(0);
+  const { rowsNum, columnsNum } = sectionData;
+  const [currentSectionData, setCurrentSectionData] = useState({
+    id,
+    type: "table or group",
+    numOfRows: rowsNum,
+    seatsPerRow: columnsNum,
+    selectedTicket: null,
+    position: {
+      rotation: 0,
+      translate: {
+        translateX: 0,
+        translateY: 0,
+      },
+    },
+  });
   const boxRef = useRef(null);
   const parentContainerStyle = {
     width: 700, // Set the width of the parent container
@@ -17,6 +39,7 @@ export default function Section({ seats, id, setSections = () => {} }) {
     border: "1px solid #ccc",
     position: "relative",
   };
+
   const onDragStop = (e, d) => {
     if (
       d.x < 0 ||
@@ -33,17 +56,26 @@ export default function Section({ seats, id, setSections = () => {} }) {
   };
 
   const handleRotate = ({ target, dist, transform }) => {
-    console.log("onRotate", dist);
     target.style.transform = transform;
+    getRotationValue();
+    setCurrentSectionData((prev) => ({
+      ...prev,
+      position: {
+        rotation: rotationDeg,
+        translate: {
+          translateX,
+          translateY,
+        },
+      },
+    }));
   };
 
   const handleRotateEnd = ({ target, isDrag, clientX, clientY }) => {
     console.log("onRotateEnd", target, isDrag);
   };
-  const sectionDivElement = document.getElementById(`${id}`);
-  const width = sectionDivElement?.offsetWidth;
-  const height = sectionDivElement?.offsetHeight;
-  console.log("sectionDivElement", width, height);
+  // const sectionDivElement = document.getElementById(`${id}`);
+  // const width = sectionDivElement?.offsetWidth;
+  // const height = sectionDivElement?.offsetHeight;
   const arrayOfSeats = new Array(seats?.numOfRows)
     .fill()
     .map((_, rowIndex) =>
@@ -51,21 +83,68 @@ export default function Section({ seats, id, setSections = () => {} }) {
     );
 
   const options = [
-    { value: "Class A", label: "Class A" },
-    { value: "Class B", label: "Class B" },
-    { value: "Class C", label: "Class C" },
+    { id: 100, value: "Class A", label: "Class A" },
+    { id: 200, value: "Class B", label: "Class B" },
+    { id: 300, value: "Class C", label: "Class C" },
   ];
 
-  const handleChange = (value) => {
-    // Handle the selected value
-    setSections((prev) => {
-      const clonedSections = [...prev];
-      const currentSection = { ...clonedSections[id], ticketName: value };
-      clonedSections[id] = currentSection;
-      return [...clonedSections];
-    });
-    console.log("Selected value:", value);
+  const handleChange = (id, value) => {
+    setCurrentSectionData((prev) => ({
+      ...prev,
+      selectedTicket: { id, value },
+    }));
   };
+  const getRotationValue = () => {
+    const divElement = document.getElementById(`section-container${id}`);
+    if (divElement) {
+      const transformValue = divElement.style.transform;
+      const match = transformValue.match(/rotate\((-?\d+\.?\d*)deg\)/);
+      if (match && match[1]) {
+        const rotation = parseFloat(match[1]);
+        setRotationDeg(rotation);
+        console.log("rotation", rotation);
+      }
+    }
+  };
+  const onDragging = () => {
+    console.log("onDragging");
+    getTranslateValues();
+    setCurrentSectionData((prev) => ({
+      ...prev,
+      position: {
+        rotation: rotationDeg,
+        translate: {
+          translateX,
+          translateY,
+        },
+      },
+    }));
+  };
+  const getTranslateValues = () => {
+    const element = document.getElementById(`rnd-container${id}`);
+    if (element) {
+      const transformValue = element.style.transform;
+      const match = transformValue.match(
+        /translate\(([-0-9.]+)px, ([-0-9.]+)px\)/
+      );
+      if (match && match[1] && match[2]) {
+        const translateX = parseFloat(match[1]);
+        const translateY = parseFloat(match[2]);
+        setTranslateX(translateX);
+        setTranslateY(translateY);
+        console.log("TranslateX:", translateX);
+        console.log("TranslateY:", translateY);
+      }
+    }
+  };
+  useEffect(() => {
+    setSections((prev) => ({
+      ...prev,
+      [id]: {
+        ...currentSectionData,
+      },
+    }));
+  }, [currentSectionData]);
   return (
     <>
       <Moveable
@@ -82,24 +161,22 @@ export default function Section({ seats, id, setSections = () => {} }) {
 
       <Rnd
         className="target"
+        id={`rnd-container${id}`}
         ref={boxRef}
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          width: 200,
-          height: 200,
-          transform: `rotate(${rotationAngle}deg)`,
           cursor: isDragging ? "grabbing" : "grab",
         }}
         bounds="parent" // Constrain dragging within the parent container
         onDragStart={() => setIsDragging(true)}
         onDragStop={onDragStop}
+        onDrag={onDragging}
         enableResizing={false}
       >
-        <div className={`target${id} ${container}`}>
-          <span>{seats?.ticketName}</span>
+        <div
+          className={`target${id} ${container}`}
+          id={`section-container${id}`}
+        >
+          <span>{seats?.selectedTicket?.value}</span>
           {arrayOfSeats?.map((row, idx) => {
             return (
               <div
@@ -117,12 +194,12 @@ export default function Section({ seats, id, setSections = () => {} }) {
               </div>
             );
           })}
+          <SelectComponent
+            options={options}
+            defaultValue="Select an Ticket"
+            onChange={handleChange}
+          />
         </div>
-        <SelectComponent
-          options={options}
-          defaultValue="Select an Ticket"
-          onChange={handleChange}
-        />
       </Rnd>
     </>
   );
