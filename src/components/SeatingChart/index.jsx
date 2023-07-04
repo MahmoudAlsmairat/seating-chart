@@ -34,8 +34,9 @@ export default function SeatingChart() {
         changeHandler={changeHandler}
         onClickHandler={onClickHandler}
       />
-      {sections?.map((item) => {
-        return <Section seats={item} />;
+
+      {sections?.map((item, id) => {
+        return <Section seats={item} id={id} />;
       })}
     </div>
   );
