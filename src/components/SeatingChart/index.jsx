@@ -31,7 +31,6 @@ export default function SeatingChart() {
         id: "",
         type: "table or group",
         ticketName: "",
-        sectionName: "",
         ticketId: 1,
         numOfRows: rowsNum,
         seatsPerRow: columnsNum,
@@ -49,7 +48,7 @@ export default function SeatingChart() {
 
       <div style={parentContainerStyle} className={sectionsContainer}>
         {sections?.map((item, id) => {
-          return <Section seats={item} id={id} />;
+          return <Section seats={item} id={id} setSections={setSections} />;
         })}
       </div>
     </div>

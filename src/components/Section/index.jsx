@@ -2,11 +2,11 @@ import React, { useRef, useState } from "react";
 import Seat from "../Seat";
 import Moveable from "react-moveable";
 import { Rnd } from "react-rnd";
-
+import SelectComponent from "../Select";
 import styles from "./styles.module.css";
 
 const { container, sectionRow, seat } = styles;
-export default function Section({ seats, id }) {
+export default function Section({ seats, id, setSections = () => {} }) {
   const [showMovable, setShowMovable] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [rotationAngle, setRotationAngle] = useState(0);
@@ -49,10 +49,27 @@ export default function Section({ seats, id }) {
     .map((_, rowIndex) =>
       new Array(seats?.seatsPerRow).fill().map((_, columnIndex) => ({}))
     );
+
+  const options = [
+    { value: "Class A", label: "Class A" },
+    { value: "Class B", label: "Class B" },
+    { value: "Class C", label: "Class C" },
+  ];
+
+  const handleChange = (value) => {
+    // Handle the selected value
+    setSections((prev) => {
+      const clonedSections = [...prev];
+      const currentSection = { ...clonedSections[id], ticketName: value };
+      clonedSections[id] = currentSection;
+      return [...clonedSections];
+    });
+    console.log("Selected value:", value);
+  };
   return (
     <>
       <Moveable
-        target={document.querySelector(`.target` + id)}
+        target={showMovable && document.querySelector(`.target` + id)}
         origin={false}
         draggable={true}
         throttleDrag={0}
@@ -68,6 +85,7 @@ export default function Section({ seats, id }) {
         ref={boxRef}
         style={{
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           width: 200,
@@ -78,17 +96,21 @@ export default function Section({ seats, id }) {
         bounds="parent" // Constrain dragging within the parent container
         onDragStart={() => setIsDragging(true)}
         onDragStop={onDragStop}
+        enableResizing={false}
       >
-        <div
-          className={`target${id} ${container}`}
-          onClick={() => {
-            setShowMovable((prev) => !prev);
-            setIsDragging((prev) => !prev);
-          }}
-        >
+        <div className={`target${id} ${container}`}>
+          <span>{seats?.ticketName}</span>
           {arrayOfSeats?.map((row, idx) => {
             return (
-              <div key={idx} className={sectionRow} id={id}>
+              <div
+                key={idx}
+                className={sectionRow}
+                id={id}
+                onClick={() => {
+                  setShowMovable((prev) => !prev);
+                  setIsDragging((prev) => !prev);
+                }}
+              >
                 {row?.map((colum, index) => {
                   return <Seat key={index} />;
                 })}
@@ -96,6 +118,11 @@ export default function Section({ seats, id }) {
             );
           })}
         </div>
+        <SelectComponent
+          options={options}
+          defaultValue="Select an Ticket"
+          onChange={handleChange}
+        />
       </Rnd>
     </>
   );
