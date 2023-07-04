@@ -1,13 +1,11 @@
 .container {
   width: fit-content;
   display: flex;
-  /* flex-wrap: wrap; */
   border: 1px solid black;
   padding: 10px;
   flex-direction: column;
   gap: 10px;
 background-color: rgb(233, 233, 233);
-  /* margin: 10px; */
 }
 .sectionRow {
   width: 100%;
