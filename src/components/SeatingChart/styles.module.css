@@ -5,7 +5,7 @@ padding: 10px;
 
 .centerContainer {
   position: relative;
-  margin-top: 50px;
+  margin-top: 30px;
 }
 
 .centerContent {
@@ -15,4 +15,9 @@ padding: 10px;
 .parentContainer{
   background-color: #fbfbfb !important;
   border: 1.5px solid #ccc
+}
+
+.seeChart{
+  margin: 20px auto;
+  width: 100px;
 }
