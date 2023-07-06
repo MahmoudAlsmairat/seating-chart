@@ -1,5 +1,10 @@
 
-.seat{
+.seat,.hoverSeat{
   border: 1px solid black;
   padding: 10px;
+}
+
+
+.reservedSeat,.hoverSeat:hover{
+  background-color: black;
 }
