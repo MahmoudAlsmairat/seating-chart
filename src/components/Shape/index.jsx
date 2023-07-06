@@ -1,37 +1,17 @@
-import React, { useRef, useState, useEffect } from "react";
-import Seat from "../Seat";
+import React, { useState, useRef } from "react";
 import Moveable from "react-moveable";
 import { Rnd } from "react-rnd";
-import SelectComponent from "../Select";
 import styles from "./styles.module.css";
 
 const { container, sectionRow } = styles;
-export default function Section({
-  seats,
-  id,
-  setSections = () => {},
-  sectionData,
-}) {
+
+export default function Shape({ component, id }) {
   const [showMovable, setShowMovable] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [rotationDeg, setRotationDeg] = useState(0);
   const [translateX, setTranslateX] = useState(0);
   const [translateY, setTranslateY] = useState(0);
-  const { rowsNum, columnsNum } = sectionData;
-  const [currentSectionData, setCurrentSectionData] = useState({
-    id,
-    type: "table or group",
-    numOfRows: rowsNum,
-    seatsPerRow: columnsNum,
-    selectedTicket: null,
-    position: {
-      rotation: 0,
-      translate: {
-        translateX: 0,
-        translateY: 0,
-      },
-    },
-  });
+
   const boxRef = useRef(null);
   const parentContainerStyle = {
     width: 700, // Set the width of the parent container
@@ -58,16 +38,16 @@ export default function Section({
   const handleRotate = ({ target, dist, transform }) => {
     target.style.transform = transform;
     getRotationValue();
-    setCurrentSectionData((prev) => ({
-      ...prev,
-      position: {
-        rotation: rotationDeg,
-        translate: {
-          translateX,
-          translateY,
-        },
-      },
-    }));
+    // setCurrentSectionData((prev) => ({
+    //   ...prev,
+    //   position: {
+    //     rotation: rotationDeg,
+    //     translate: {
+    //       translateX,
+    //       translateY,
+    //     },
+    //   },
+    // }));
   };
 
   const handleRotateEnd = ({ target, isDrag, clientX, clientY }) => {
@@ -76,17 +56,17 @@ export default function Section({
   // const sectionDivElement = document.getElementById(`${id}`);
   // const width = sectionDivElement?.offsetWidth;
   // const height = sectionDivElement?.offsetHeight;
-  const arrayOfSeats = new Array(seats?.numOfRows)
-    .fill()
-    .map((_, rowIndex) =>
-      new Array(seats?.seatsPerRow).fill().map((_, columnIndex) => ({}))
-    );
+  // const arrayOfSeats = new Array(seats?.numOfRows)
+  //   .fill()
+  //   .map((_, rowIndex) =>
+  //     new Array(seats?.seatsPerRow).fill().map((_, columnIndex) => ({}))
+  //   );
 
-  const options = [
-    { id: 100, value: "Class A", label: "Class A" },
-    { id: 200, value: "Class B", label: "Class B" },
-    { id: 300, value: "Class C", label: "Class C" },
-  ];
+  // const options = [
+  //   { id: 100, value: "Class A", label: "Class A" },
+  //   { id: 200, value: "Class B", label: "Class B" },
+  //   { id: 300, value: "Class C", label: "Class C" },
+  // ];
 
   const getRotationValue = () => {
     const divElement = document.getElementById(`section-container${id}`);
@@ -103,16 +83,16 @@ export default function Section({
   const onDragging = () => {
     console.log("onDragging");
     getTranslateValues();
-    setCurrentSectionData((prev) => ({
-      ...prev,
-      position: {
-        rotation: rotationDeg,
-        translate: {
-          translateX,
-          translateY,
-        },
-      },
-    }));
+    // setCurrentSectionData((prev) => ({
+    //   ...prev,
+    //   position: {
+    //     rotation: rotationDeg,
+    //     translate: {
+    //       translateX,
+    //       translateY,
+    //     },
+    //   },
+    // }));
   };
   const getTranslateValues = () => {
     const element = document.getElementById(`rnd-container${id}`);
@@ -131,27 +111,10 @@ export default function Section({
       }
     }
   };
-  const handleChange = (id, value) => {
-    setCurrentSectionData((prev) => ({
-      ...prev,
-      selectedTicket: { id, value },
-    }));
-  };
-  useEffect(() => {
-    setSections((prev) => ({
-      ...prev,
-      sections: {
-        ...prev.sections,
-        [id]: {
-          ...currentSectionData,
-        },
-      },
-    }));
-  }, [currentSectionData]);
   return (
     <>
       <Moveable
-        target={showMovable && document.querySelector(`.target` + id)}
+        target={showMovable && document.querySelector(`.targetShape` + id)}
         origin={false}
         draggable={true}
         throttleDrag={0}
@@ -163,7 +126,7 @@ export default function Section({
       />
 
       <Rnd
-        className="target"
+        className="targetShape"
         id={`rnd-container${id}`}
         ref={boxRef}
         style={{
@@ -176,32 +139,14 @@ export default function Section({
         enableResizing={false}
       >
         <div
-          className={`target${id} ${container}`}
+          className={`targetShape${id} ${container}`}
           id={`section-container${id}`}
+          onClick={() => {
+            setShowMovable((prev) => !prev);
+            setIsDragging((prev) => !prev);
+          }}
         >
-          <span>{seats?.selectedTicket?.value}</span>
-          {arrayOfSeats?.map((row, idx) => {
-            return (
-              <div
-                key={idx}
-                className={sectionRow}
-                id={id}
-                onClick={() => {
-                  setShowMovable((prev) => !prev);
-                  setIsDragging((prev) => !prev);
-                }}
-              >
-                {row?.map((colum, index) => {
-                  return <Seat key={index} />;
-                })}
-              </div>
-            );
-          })}
-          <SelectComponent
-            options={options}
-            defaultValue="Select an Ticket"
-            onChange={handleChange}
-          />
+          {component}
         </div>
       </Rnd>
     </>

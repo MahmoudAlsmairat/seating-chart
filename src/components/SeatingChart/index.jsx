@@ -2,15 +2,29 @@ import React, { useState } from "react";
 import { Rnd } from "react-rnd";
 import Form from "../Form";
 import Section from "../Section";
+import { Dropdown, Button, Menu } from "antd";
+import {
+  WomanOutlined,
+  LoginOutlined,
+  LogoutOutlined,
+  MenuOutlined,
+} from "@ant-design/icons";
+import Shape from "../Shape";
 import styles from "./styles.module.css";
-const { container, centerContainer, centerContent, parentContainer } = styles;
+const {
+  container,
+  centerContainer,
+  centerContent,
+  parentContainer,
+  menuWrapper,
+} = styles;
 
 export default function SeatingChart() {
   const [formData, setFormData] = useState({
     rowsNum: 0,
     columnsNum: 0,
   });
-  const [sections, setSections] = useState({});
+  const [sections, setSections] = useState({ utils: [], sections: {} });
   const [pageHeight, setPageHeight] = useState(500);
   const [numOfSections, setNumOfSections] = useState(0);
   const changeHandler = ({ target: { value, name } }) => {
@@ -25,24 +39,69 @@ export default function SeatingChart() {
     setNumOfSections(numOfSections + 1);
     setSections((prev) => ({
       ...prev,
-      [numOfSections + 1]: {
-        position: {
-          top: 151,
-          rotate: 151,
-          left: 121,
+      sections: {
+        ...prev?.sections,
+        [numOfSections + 1]: {
+          position: {
+            top: 151,
+            rotate: 151,
+            left: 121,
+          },
+          id: "",
+          type: "table or group",
+          ticketName: "",
+          ticketId: 1,
+          numOfRows: rowsNum,
+          seatsPerRow: columnsNum,
         },
-        id: "",
-        type: "table or group",
-        ticketName: "",
-        ticketId: 1,
-        numOfRows: rowsNum,
-        seatsPerRow: columnsNum,
       },
     }));
   };
   const handleResize = (e, direction, ref, delta, position) => {
     setPageHeight(pageHeight + 5);
   };
+  const addStageHandler = () => {
+    setSections((prev) => ({
+      ...prev,
+      utils: [...prev?.utils, { type: "stage", component: <WomanOutlined /> }],
+    }));
+  };
+  const addEntranceDoorHandler = () => {
+    setSections((prev) => ({
+      ...prev,
+      utils: [
+        ...prev?.utils,
+        { type: "entranceDoor", component: <LoginOutlined /> },
+      ],
+    }));
+  };
+  const addExitDoorHandler = () => {
+    setSections((prev) => ({
+      ...prev,
+      utils: [
+        ...prev?.utils,
+        { type: "entranceDoor", component: <LogoutOutlined /> },
+      ],
+    }));
+  };
+
+  const handleMenuClick = (e) => {
+    const actionKey = e.key;
+    return (
+      {
+        addStage: addStageHandler,
+        addEntranceDoor: addEntranceDoorHandler,
+        addExitDoor: addExitDoorHandler,
+      }[actionKey]() || null
+    );
+  };
+  const menu = (
+    <Menu onClick={handleMenuClick}>
+      <Menu.Item key="addStage">Add stage</Menu.Item>
+      <Menu.Item key="addEntranceDoor">Add Entrance Door</Menu.Item>
+      <Menu.Item key="addExitDoor">Add Exit Door</Menu.Item>
+    </Menu>
+  );
   return (
     <div className={container} style={{ height: `${pageHeight}px` }}>
       <Form
@@ -52,6 +111,13 @@ export default function SeatingChart() {
       />
 
       <div className={centerContainer}>
+        <div className={menuWrapper}>
+          <Dropdown overlay={menu}>
+            <Button>
+              <MenuOutlined />
+            </Button>
+          </Dropdown>
+        </div>
         <div className={centerContent}>
           <Rnd
             className={parentContainer}
@@ -72,10 +138,13 @@ export default function SeatingChart() {
             }}
             onResize={handleResize}
           >
-            {Object?.keys(sections)?.map((item, id) => {
+            {sections?.utils?.map((item, idx) => {
+              return <Shape component={item?.component} id={idx} />;
+            })}
+            {Object?.keys(sections?.sections || {})?.map((item, id) => {
               return (
                 <Section
-                  seats={sections[item]}
+                  seats={sections?.sections[item]}
                   id={item}
                   sectionData={formData}
                   setSections={setSections}
