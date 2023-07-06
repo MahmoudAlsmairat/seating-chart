@@ -7,7 +7,6 @@ const { container, header } = styles;
 const ViewChart = () => {
   const sectionLocalStorage = JSON.parse(localStorage.getItem("sections"));
   const parentContainerHeight = localStorage.getItem("parentContainerHeight");
-  console.log("parentContainerHeight", parentContainerHeight);
 
   return (
     <div>

@@ -23,7 +23,7 @@ export default function SeatingChart() {
       [name]: +value,
     }));
   };
-
+  console.log("finalObj", sections);
   const onClickHandler = () => {
     const { rowsNum, columnsNum } = formData;
     setNumOfSections(numOfSections + 1);

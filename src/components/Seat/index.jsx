@@ -8,7 +8,6 @@ export default function Seat({ isView = false }) {
   const seatClassName = isView ? `${seat} ${hoverSeat}` : seat;
   const handleClick = () => {
     setIsReserved((prevIsReserved) => !prevIsReserved);
-    console.log(true);
   };
 
   let seatClasses = seatClassName;
