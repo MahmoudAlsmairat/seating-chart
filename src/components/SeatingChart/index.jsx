@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Rnd } from "react-rnd";
+import { useNavigate } from "react-router-dom";
 import Form from "../Form";
 import Section from "../Section";
 import { Dropdown, Button, Menu } from "antd";
@@ -15,9 +16,10 @@ const {
   container,
   centerContainer,
   centerContent,
-  parentContainer,
+  parentContainer, seeChart,
   menuWrapper,
-} = styles;
+} =
+  styles;
 
 export default function SeatingChart() {
   const [formData, setFormData] = useState({
@@ -27,13 +29,15 @@ export default function SeatingChart() {
   const [sections, setSections] = useState({ utils: [], sections: {} });
   const [pageHeight, setPageHeight] = useState(500);
   const [numOfSections, setNumOfSections] = useState(0);
+  const navigate = useNavigate();
+
   const changeHandler = ({ target: { value, name } }) => {
     setFormData((prev) => ({
       ...prev,
       [name]: +value,
     }));
   };
-  console.log("FinalObj", sections);
+  console.log("finalObj", sections);
   const onClickHandler = () => {
     const { rowsNum, columnsNum } = formData;
     setNumOfSections(numOfSections + 1);
@@ -57,8 +61,16 @@ export default function SeatingChart() {
       },
     }));
   };
+
   const handleResize = (e, direction, ref, delta, position) => {
     setPageHeight(pageHeight + 5);
+    const getHeight = document.getElementById("parentContainer");
+    localStorage.setItem("parentContainerHeight", getHeight.style.height);
+  };
+
+  const onClickSeeChart = () => {
+    localStorage.setItem("sections", JSON.stringify(sections));
+    navigate("/chart");
   };
   const addStageHandler = () => {
     setSections((prev) => ({
@@ -102,6 +114,7 @@ export default function SeatingChart() {
       <Menu.Item key="addExitDoor">Add Exit Door</Menu.Item>
     </Menu>
   );
+
   return (
     <div className={container} style={{ height: `${pageHeight}px` }}>
       <Form
@@ -109,7 +122,9 @@ export default function SeatingChart() {
         changeHandler={changeHandler}
         onClickHandler={onClickHandler}
       />
-
+      <div className={seeChart}>
+        <button onClick={onClickSeeChart}>See Chart</button>
+      </div>
       <div className={centerContainer}>
         <div className={menuWrapper}>
           <Dropdown overlay={menu}>
@@ -121,6 +136,7 @@ export default function SeatingChart() {
         <div className={centerContent}>
           <Rnd
             className={parentContainer}
+            id="parentContainer"
             enableResizing={{
               top: true,
               right: false,
