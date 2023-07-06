@@ -5,7 +5,9 @@ const { seat, hoverSeat, reservedSeat } = styles;
 export default function Seat({ isView = false }) {
   const [isReserved, setIsReserved] = useState(false);
 
-  const seatClassName = isView ? `${seat} ${hoverSeat}` : seat;
+  const seatClassName = isView
+    ? `${seat} ${isReserved ? "" : hoverSeat}`
+    : seat;
   const handleClick = () => {
     setIsReserved((prevIsReserved) => !prevIsReserved);
   };
