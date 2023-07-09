@@ -1,9 +1,15 @@
 import React from "react";
 import styles from "./styles.module.css";
 import ViewSection from "../components/ViewSection";
-
+import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
+import stage from "../components/assets/stage.avif";
 const { container, header } = styles;
 
+const shape = {
+  stage: <img src={stage} alt="stage" />,
+  entranceDoor: <LoginOutlined />,
+  exitDoor: <LogoutOutlined />,
+};
 const ViewChart = () => {
   const sectionLocalStorage = JSON.parse(localStorage.getItem("sections"));
   const parentContainerHeight = localStorage.getItem("parentContainerHeight");
@@ -12,8 +18,26 @@ const ViewChart = () => {
     <div>
       <h1 className={header}>Chart Page</h1>
       <div className={container} style={{ height: `${parentContainerHeight}` }}>
-        {Object?.keys(sectionLocalStorage)?.map((item, id) => {
-          return <ViewSection seats={sectionLocalStorage[item]} id={item} />;
+        {sectionLocalStorage?.utils?.map((item) => {
+          console.log(
+            "item?.position?.translate?.translateY",
+            item?.position?.translate?.translateY
+          );
+          const transformStyle = {
+            transform: `rotate(${item?.position?.rotation}deg)`,
+            top: `${item?.position?.translate?.translateY}px`,
+            left: `${item?.position?.translate?.translateX}px`,
+            position: "absolute",
+          };
+          return <div style={transformStyle}>{shape[item?.type]}</div>;
+        })}
+        {Object?.keys(sectionLocalStorage?.sections)?.map((item, id) => {
+          return (
+            <ViewSection
+              seats={sectionLocalStorage?.sections[item]}
+              id={item}
+            />
+          );
         })}
       </div>
     </div>

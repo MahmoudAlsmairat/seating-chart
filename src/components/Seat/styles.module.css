@@ -5,6 +5,10 @@
 }
 
 
-.reservedSeat,.hoverSeat:hover{
+.reservedSeat{
   background-color: black;
+}
+.hoverSeat:hover{
+  background-color: rgba(0, 0, 0, 0.267);
+
 }

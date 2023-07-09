@@ -4,8 +4,7 @@ import { Rnd } from "react-rnd";
 import styles from "./styles.module.css";
 
 const { container, sectionRow } = styles;
-
-export default function Shape({ component, id }) {
+export default function Shape({ component, id, setSections = () => {} }) {
   const [showMovable, setShowMovable] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [rotationDeg, setRotationDeg] = useState(0);
@@ -38,16 +37,22 @@ export default function Shape({ component, id }) {
   const handleRotate = ({ target, dist, transform }) => {
     target.style.transform = transform;
     getRotationValue();
-    // setCurrentSectionData((prev) => ({
-    //   ...prev,
-    //   position: {
-    //     rotation: rotationDeg,
-    //     translate: {
-    //       translateX,
-    //       translateY,
-    //     },
-    //   },
-    // }));
+    setSections((prev) => {
+      const currentUtils = prev?.utils[id];
+      currentUtils.position = {
+        rotation: rotationDeg,
+        translate: {
+          translateX,
+          translateY,
+        },
+      };
+      const utils = [...prev?.utils];
+      utils[id] = currentUtils;
+      return {
+        ...prev,
+        utils,
+      };
+    });
   };
 
   const handleRotateEnd = ({ target, isDrag, clientX, clientY }) => {
@@ -83,16 +88,22 @@ export default function Shape({ component, id }) {
   const onDragging = () => {
     console.log("onDragging");
     getTranslateValues();
-    // setCurrentSectionData((prev) => ({
-    //   ...prev,
-    //   position: {
-    //     rotation: rotationDeg,
-    //     translate: {
-    //       translateX,
-    //       translateY,
-    //     },
-    //   },
-    // }));
+    setSections((prev) => {
+      const currentUtils = prev?.utils[id];
+      currentUtils.position = {
+        rotation: rotationDeg,
+        translate: {
+          translateX,
+          translateY,
+        },
+      };
+      const utils = [...prev?.utils];
+      utils[id] = currentUtils;
+      return {
+        ...prev,
+        utils,
+      };
+    });
   };
   const getTranslateValues = () => {
     const element = document.getElementById(`rnd-container${id}`);

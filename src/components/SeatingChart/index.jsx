@@ -4,22 +4,19 @@ import { useNavigate } from "react-router-dom";
 import Form from "../Form";
 import Section from "../Section";
 import { Dropdown, Button, Menu } from "antd";
-import {
-  WomanOutlined,
-  LoginOutlined,
-  LogoutOutlined,
-  MenuOutlined,
-} from "@ant-design/icons";
+import { LoginOutlined, LogoutOutlined, MenuOutlined } from "@ant-design/icons";
+import stage from "../assets/stage.avif";
+
 import Shape from "../Shape";
 import styles from "./styles.module.css";
 const {
   container,
   centerContainer,
   centerContent,
-  parentContainer, seeChart,
+  parentContainer,
+  seeChart,
   menuWrapper,
-} =
-  styles;
+} = styles;
 
 export default function SeatingChart() {
   const [formData, setFormData] = useState({
@@ -75,7 +72,10 @@ export default function SeatingChart() {
   const addStageHandler = () => {
     setSections((prev) => ({
       ...prev,
-      utils: [...prev?.utils, { type: "stage", component: <WomanOutlined /> }],
+      utils: [
+        ...prev?.utils,
+        { type: "stage", component: <img src={stage} alt="stage" /> },
+      ],
     }));
   };
   const addEntranceDoorHandler = () => {
@@ -92,7 +92,7 @@ export default function SeatingChart() {
       ...prev,
       utils: [
         ...prev?.utils,
-        { type: "entranceDoor", component: <LogoutOutlined /> },
+        { type: "exitDoor", component: <LogoutOutlined /> },
       ],
     }));
   };
@@ -155,7 +155,13 @@ export default function SeatingChart() {
             onResize={handleResize}
           >
             {sections?.utils?.map((item, idx) => {
-              return <Shape component={item?.component} id={idx} />;
+              return (
+                <Shape
+                  component={item?.component}
+                  id={idx}
+                  setSections={setSections}
+                />
+              );
             })}
             {Object?.keys(sections?.sections || {})?.map((item, id) => {
               return (
