@@ -150,7 +150,7 @@ export default function SeatingChart() {
             disableDragging={true}
             default={{
               width: window.innerWidth - 50,
-              height: 200,
+              height: 600,
             }}
             onResize={handleResize}
           >
