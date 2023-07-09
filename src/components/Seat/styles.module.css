@@ -1,14 +1,12 @@
-
 .seat,.hoverSeat{
   border: 1px solid black;
   padding: 10px;
 }
 
-
 .reservedSeat{
   background-color: black;
 }
 .hoverSeat:hover{
-  background-color: rgba(0, 0, 0, 0.267);
-
+  background-color: rgba(0, 0, 0, 0.262);
 }
+
