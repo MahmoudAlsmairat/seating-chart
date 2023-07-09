@@ -2,7 +2,11 @@
 .container{
 padding: 10px;
 }
-
+.menuWrapper{
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
 .centerContainer {
   position: relative;
   margin-top: 30px;

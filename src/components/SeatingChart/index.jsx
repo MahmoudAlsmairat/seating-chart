@@ -3,16 +3,27 @@ import { Rnd } from "react-rnd";
 import { useNavigate } from "react-router-dom";
 import Form from "../Form";
 import Section from "../Section";
+import { Dropdown, Button, Menu } from "antd";
+import { LoginOutlined, LogoutOutlined, MenuOutlined } from "@ant-design/icons";
+import stage from "../assets/stage.avif";
+
+import Shape from "../Shape";
 import styles from "./styles.module.css";
-const { container, centerContainer, centerContent, parentContainer, seeChart } =
-  styles;
+const {
+  container,
+  centerContainer,
+  centerContent,
+  parentContainer,
+  seeChart,
+  menuWrapper,
+} = styles;
 
 export default function SeatingChart() {
   const [formData, setFormData] = useState({
     rowsNum: 0,
     columnsNum: 0,
   });
-  const [sections, setSections] = useState({});
+  const [sections, setSections] = useState({ utils: [], sections: {} });
   const [pageHeight, setPageHeight] = useState(500);
   const [numOfSections, setNumOfSections] = useState(0);
   const navigate = useNavigate();
@@ -29,18 +40,21 @@ export default function SeatingChart() {
     setNumOfSections(numOfSections + 1);
     setSections((prev) => ({
       ...prev,
-      [numOfSections + 1]: {
-        position: {
-          top: 151,
-          rotate: 151,
-          left: 121,
+      sections: {
+        ...prev?.sections,
+        [numOfSections + 1]: {
+          position: {
+            top: 151,
+            rotate: 151,
+            left: 121,
+          },
+          id: "",
+          type: "table or group",
+          ticketName: "",
+          ticketId: 1,
+          numOfRows: rowsNum,
+          seatsPerRow: columnsNum,
         },
-        id: "",
-        type: "table or group",
-        ticketName: "",
-        ticketId: 1,
-        numOfRows: rowsNum,
-        seatsPerRow: columnsNum,
       },
     }));
   };
@@ -55,6 +69,51 @@ export default function SeatingChart() {
     localStorage.setItem("sections", JSON.stringify(sections));
     navigate("/chart");
   };
+  const addStageHandler = () => {
+    setSections((prev) => ({
+      ...prev,
+      utils: [
+        ...prev?.utils,
+        { type: "stage", component: <img src={stage} alt="stage" /> },
+      ],
+    }));
+  };
+  const addEntranceDoorHandler = () => {
+    setSections((prev) => ({
+      ...prev,
+      utils: [
+        ...prev?.utils,
+        { type: "entranceDoor", component: <LoginOutlined /> },
+      ],
+    }));
+  };
+  const addExitDoorHandler = () => {
+    setSections((prev) => ({
+      ...prev,
+      utils: [
+        ...prev?.utils,
+        { type: "exitDoor", component: <LogoutOutlined /> },
+      ],
+    }));
+  };
+
+  const handleMenuClick = (e) => {
+    const actionKey = e.key;
+    return (
+      {
+        addStage: addStageHandler,
+        addEntranceDoor: addEntranceDoorHandler,
+        addExitDoor: addExitDoorHandler,
+      }[actionKey]() || null
+    );
+  };
+  const menu = (
+    <Menu onClick={handleMenuClick}>
+      <Menu.Item key="addStage">Add stage</Menu.Item>
+      <Menu.Item key="addEntranceDoor">Add Entrance Door</Menu.Item>
+      <Menu.Item key="addExitDoor">Add Exit Door</Menu.Item>
+    </Menu>
+  );
 
   return (
     <div className={container} style={{ height: `${pageHeight}px` }}>
@@ -67,6 +126,13 @@ export default function SeatingChart() {
         <button onClick={onClickSeeChart}>See Chart</button>
       </div>
       <div className={centerContainer}>
+        <div className={menuWrapper}>
+          <Dropdown overlay={menu}>
+            <Button>
+              <MenuOutlined />
+            </Button>
+          </Dropdown>
+        </div>
         <div className={centerContent}>
           <Rnd
             className={parentContainer}
@@ -84,14 +150,23 @@ export default function SeatingChart() {
             disableDragging={true}
             default={{
               width: window.innerWidth - 50,
-              height: 200,
+              height: 600,
             }}
             onResize={handleResize}
           >
-            {Object?.keys(sections)?.map((item, id) => {
+            {sections?.utils?.map((item, idx) => {
+              return (
+                <Shape
+                  component={item?.component}
+                  id={idx}
+                  setSections={setSections}
+                />
+              );
+            })}
+            {Object?.keys(sections?.sections || {})?.map((item, id) => {
               return (
                 <Section
-                  seats={sections[item]}
+                  seats={sections?.sections[item]}
                   id={item}
                   sectionData={formData}
                   setSections={setSections}
