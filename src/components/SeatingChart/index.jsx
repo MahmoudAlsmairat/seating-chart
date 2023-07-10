@@ -8,6 +8,7 @@ import {
   ImportOutlined,
   ExportOutlined,
   MenuOutlined,
+  EyeOutlined,
 } from "@ant-design/icons";
 import stage from "../assets/stage.avif";
 import Shape from "../Shape";
@@ -163,7 +164,9 @@ export default function SeatingChart() {
         onClickHandler={onClickHandler}
       />
       <div className={seeChart}>
-        <Button onClick={onClickSeeChart}>See Chart</Button>
+        <Button onClick={onClickSeeChart} icon={<EyeOutlined />}>
+          See Chart
+        </Button>
       </div>
       <div className={centerContainer}>
         <div className={menuWrapper}>
