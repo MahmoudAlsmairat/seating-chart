@@ -4,9 +4,12 @@ import { useNavigate } from "react-router-dom";
 import Form from "../Form";
 import Section from "../Section";
 import { Dropdown, Button, Menu } from "antd";
-import { LoginOutlined, LogoutOutlined, MenuOutlined } from "@ant-design/icons";
+import {
+  ImportOutlined,
+  ExportOutlined,
+  MenuOutlined,
+} from "@ant-design/icons";
 import stage from "../assets/stage.avif";
-
 import Shape from "../Shape";
 import styles from "./styles.module.css";
 const {
@@ -74,7 +77,12 @@ export default function SeatingChart() {
       ...prev,
       utils: [
         ...prev?.utils,
-        { type: "stage", component: <img src={stage} alt="stage" /> },
+        {
+          type: "stage",
+          component: (
+            <img src={stage} alt="stage" style={{ objectFit: "cover" }} />
+          ),
+        },
       ],
     }));
   };
@@ -83,7 +91,15 @@ export default function SeatingChart() {
       ...prev,
       utils: [
         ...prev?.utils,
-        { type: "entranceDoor", component: <LoginOutlined /> },
+        {
+          type: "entranceDoor",
+          component: (
+            <ImportOutlined
+              style={{ width: "50px", height: "50px" }}
+              size={1000}
+            />
+          ),
+        },
       ],
     }));
   };
@@ -92,7 +108,7 @@ export default function SeatingChart() {
       ...prev,
       utils: [
         ...prev?.utils,
-        { type: "exitDoor", component: <LogoutOutlined /> },
+        { type: "exitDoor", component: <ExportOutlined size={1000} /> },
       ],
     }));
   };
