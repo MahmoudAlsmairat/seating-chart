@@ -9,6 +9,7 @@ padding: 10px;
 }
 .centerContainer {
   position: relative;
+
   margin-top: 30px;
 }
 
@@ -16,10 +17,12 @@ padding: 10px;
   position: absolute;
   left: 1%;
 }
-.parentContainer{
-  background-color: #fbfbfb !important;
-  border: 1.5px solid #ccc
+.parentContainer {
+  background-image: url('../assets/parentBackground.jpg');
+  background-size: contain;
+  border: 1.5px solid #ccc;
 }
+
 
 .seeChart{
   margin: 20px auto;

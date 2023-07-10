@@ -1,14 +1,18 @@
 import React from "react";
 import styles from "./styles.module.css";
 import ViewSection from "../components/ViewSection";
-import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
+import { ImportOutlined, ExportOutlined } from "@ant-design/icons";
 import stage from "../components/assets/stage.avif";
 const { container, header } = styles;
 
 const shape = {
-  stage: <img src={stage} alt="stage" />,
-  entranceDoor: <LoginOutlined />,
-  exitDoor: <LogoutOutlined />,
+  stage: <img src={stage} alt="stage" width="400px" height="200px" />,
+  entranceDoor: (
+    <ImportOutlined style={{ fontSize: "55px", background: "#FFFFFF" }} />
+  ),
+  exitDoor: (
+    <ExportOutlined style={{ fontSize: "55px", background: "#FFFFFF" }} />
+  ),
 };
 const ViewChart = () => {
   const sectionLocalStorage = JSON.parse(localStorage.getItem("sections"));

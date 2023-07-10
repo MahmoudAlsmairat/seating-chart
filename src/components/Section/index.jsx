@@ -118,6 +118,7 @@ export default function Section({
     const element = document.getElementById(`rnd-container${id}`);
     if (element) {
       const transformValue = element.style.transform;
+      console.log("tttttt", transformValue);
       const match = transformValue.match(
         /translate\(([-0-9.]+)px, ([-0-9.]+)px\)/
       );
@@ -169,7 +170,7 @@ export default function Section({
         style={{
           cursor: isDragging ? "grabbing" : "grab",
         }}
-        bounds="parent" // Constrain dragging within the parent container
+        bounds="parent"
         onDragStart={() => setIsDragging(true)}
         onDragStop={onDragStop}
         onDrag={onDragging}
