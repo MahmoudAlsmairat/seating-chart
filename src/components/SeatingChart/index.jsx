@@ -10,7 +10,6 @@ import {
   MenuOutlined,
 } from "@ant-design/icons";
 import stage from "../assets/stage.avif";
-
 import Shape from "../Shape";
 import styles from "./styles.module.css";
 const {
