@@ -74,7 +74,7 @@ export default function Shape({ component, id, setSections = () => {} }) {
   // ];
 
   const getRotationValue = () => {
-    const divElement = document.getElementById(`section-container${id}`);
+    const divElement = document.getElementById(`shape-section${id}`);
     if (divElement) {
       const transformValue = divElement.style.transform;
       const match = transformValue.match(/rotate\((-?\d+\.?\d*)deg\)/);
@@ -106,7 +106,7 @@ export default function Shape({ component, id, setSections = () => {} }) {
     });
   };
   const getTranslateValues = () => {
-    const element = document.getElementById(`rnd-container${id}`);
+    const element = document.getElementById(`rnd-container-shape${id}`);
     if (element) {
       const transformValue = element.style.transform;
       const match = transformValue.match(
@@ -138,7 +138,7 @@ export default function Shape({ component, id, setSections = () => {} }) {
 
       <Rnd
         className="targetShape"
-        id={`rnd-container${id}`}
+        id={`rnd-container-shape${id}`}
         ref={boxRef}
         style={{
           cursor: isDragging ? "grabbing" : "grab",
@@ -147,11 +147,11 @@ export default function Shape({ component, id, setSections = () => {} }) {
         onDragStart={() => setIsDragging(true)}
         onDragStop={onDragStop}
         onDrag={onDragging}
-        enableResizing={false}
+        enableResizing={true}
       >
         <div
           className={`targetShape${id} ${container}`}
-          id={`section-container${id}`}
+          id={`shape-section${id}`}
           onClick={() => {
             setShowMovable((prev) => !prev);
             setIsDragging((prev) => !prev);
