@@ -1,11 +1,13 @@
 .container {
   width: fit-content;
   display: flex;
-  border: 1px solid black;
+  border: 1px solid #1A5276;
+  border-radius: 10px;
   padding: 10px;
   flex-direction: column;
   gap: 10px;
-  background-color: rgb(233, 233, 233);
+  background-color:  #D4E6F1;
+  align-items: center;
   margin-top: 40px;
   position: absolute;
   z-index: 1000;

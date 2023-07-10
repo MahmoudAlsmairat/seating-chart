@@ -6,12 +6,36 @@ import stage from "../components/assets/stage.avif";
 const { container, header } = styles;
 
 const shape = {
-  stage: <img src={stage} alt="stage" width="400px" height="200px" />,
+  stage: (
+    <img
+      src={stage}
+      alt="stage"
+      width="400px"
+      height="200px"
+      style={{
+        borderRadius: "10px",
+      }}
+    />
+  ),
   entranceDoor: (
-    <ImportOutlined style={{ fontSize: "55px", background: "#FFFFFF" }} />
+    <ImportOutlined
+      style={{
+        fontSize: "55px",
+        color: "#1A5276",
+        backgroundColor: "white",
+        borderRadius: "10px",
+      }}
+    />
   ),
   exitDoor: (
-    <ExportOutlined style={{ fontSize: "55px", background: "#FFFFFF" }} />
+    <ExportOutlined
+      style={{
+        fontSize: "55px",
+        color: "#1A5276",
+        backgroundColor: "white",
+        borderRadius: "10px",
+      }}
+    />
   ),
 };
 const ViewChart = () => {

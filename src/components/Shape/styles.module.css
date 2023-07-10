@@ -1,10 +1,8 @@
 .container {
   width: fit-content;
   display: flex;
-  border: 1px solid black;
   flex-direction: column;
   gap: 10px;
-background-color: rgb(233, 233, 233);
 }
 .sectionRow {
   width: 100%;

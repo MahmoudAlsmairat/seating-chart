@@ -80,7 +80,15 @@ export default function SeatingChart() {
         {
           type: "stage",
           component: (
-            <img src={stage} alt="stage" width="400px" height="200px" />
+            <img
+              src={stage}
+              alt="stage"
+              width="400px"
+              height="200px"
+              style={{
+                borderRadius: "10px",
+              }}
+            />
           ),
         },
       ],
@@ -93,7 +101,16 @@ export default function SeatingChart() {
         ...prev?.utils,
         {
           type: "entranceDoor",
-          component: <ImportOutlined style={{ fontSize: "55px" }} />,
+          component: (
+            <ImportOutlined
+              style={{
+                fontSize: "55px",
+                color: "#1A5276",
+                backgroundColor: "white",
+                borderRadius: "10px",
+              }}
+            />
+          ),
         },
       ],
     }));
@@ -105,7 +122,16 @@ export default function SeatingChart() {
         ...prev?.utils,
         {
           type: "exitDoor",
-          component: <ExportOutlined style={{ fontSize: "55px" }} />,
+          component: (
+            <ExportOutlined
+              style={{
+                fontSize: "55px",
+                color: "#1A5276",
+                backgroundColor: "white",
+                borderRadius: "10px",
+              }}
+            />
+          ),
         },
       ],
     }));
@@ -137,7 +163,7 @@ export default function SeatingChart() {
         onClickHandler={onClickHandler}
       />
       <div className={seeChart}>
-        <button onClick={onClickSeeChart}>See Chart</button>
+        <Button onClick={onClickSeeChart}>See Chart</Button>
       </div>
       <div className={centerContainer}>
         <div className={menuWrapper}>
