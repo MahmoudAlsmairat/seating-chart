@@ -1,9 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Moveable from "react-moveable";
 import { Rnd } from "react-rnd";
 import styles from "./styles.module.css";
 
 const { container, sectionRow } = styles;
+
 export default function Shape({ component, id, setSections = () => {} }) {
   const [showMovable, setShowMovable] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -12,6 +13,24 @@ export default function Shape({ component, id, setSections = () => {} }) {
   const [translateY, setTranslateY] = useState(0);
 
   const boxRef = useRef(null);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
+        setShowMovable(false);
+      }
+    };
+
+    document.addEventListener("click", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
   const parentContainerStyle = {
     width: 700, // Set the width of the parent container
     height: 500, // Set the height of the parent container
@@ -58,20 +77,6 @@ export default function Shape({ component, id, setSections = () => {} }) {
   const handleRotateEnd = ({ target, isDrag, clientX, clientY }) => {
     console.log("onRotateEnd", target, isDrag);
   };
-  // const sectionDivElement = document.getElementById(`${id}`);
-  // const width = sectionDivElement?.offsetWidth;
-  // const height = sectionDivElement?.offsetHeight;
-  // const arrayOfSeats = new Array(seats?.numOfRows)
-  //   .fill()
-  //   .map((_, rowIndex) =>
-  //     new Array(seats?.seatsPerRow).fill().map((_, columnIndex) => ({}))
-  //   );
-
-  // const options = [
-  //   { id: 100, value: "Class A", label: "Class A" },
-  //   { id: 200, value: "Class B", label: "Class B" },
-  //   { id: 300, value: "Class C", label: "Class C" },
-  // ];
 
   const getRotationValue = () => {
     const divElement = document.getElementById(`shape-section${id}`);
@@ -156,6 +161,7 @@ export default function Shape({ component, id, setSections = () => {} }) {
             setShowMovable((prev) => !prev);
             setIsDragging((prev) => !prev);
           }}
+          ref={containerRef}
         >
           {component}
         </div>
