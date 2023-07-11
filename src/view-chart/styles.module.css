@@ -6,6 +6,10 @@ border: 1.5px solid #ccc;
   padding: 10px;
   margin: 40px auto;
   gap: 10px;
+  /* background-image: url('../components/assets/parentBackground.jpg');
+  background-size: contain; */
+  background-color: rgb(225, 225, 225);
+  border-radius: 10px;
 }
 .header{
   text-align: center;

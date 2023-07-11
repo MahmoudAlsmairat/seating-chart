@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { Select } from "antd";
+
+const { Option } = Select;
 
 const SelectComponent = ({ options, defaultValue, onChange }) => {
   const defaultOption = {
@@ -7,27 +10,30 @@ const SelectComponent = ({ options, defaultValue, onChange }) => {
     label: `${defaultValue}`,
   };
 
-  const [selectedOption, setSelectedOption] = useState(defaultOption);
+  const [selectedOption, setSelectedOption] = useState(defaultOption.value);
 
-  const handleSelectChange = (event) => {
-    const selectedIndex = event.target.selectedIndex;
-    const selectedOption = options[selectedIndex - 1];
-    setSelectedOption(selectedOption);
+  const handleSelectChange = (value, option) => {
+    setSelectedOption(value);
+    const selectedOption = options.find((o) => o.value === value);
     onChange(selectedOption.id, selectedOption.value);
   };
 
   return (
     <div>
-      <select onChange={handleSelectChange} value={selectedOption.value}>
-        <option value={defaultOption.value} disabled>
+      <Select
+        onChange={handleSelectChange}
+        value={selectedOption}
+        defaultValue={defaultOption.value}
+      >
+        <Option value={defaultOption.value} disabled>
           {defaultOption.label}
-        </option>
+        </Option>
         {options.map((option) => (
-          <option key={option.idTicket} value={option.value}>
+          <Option key={option.idTicket} value={option.value}>
             {option.label}
-          </option>
+          </Option>
         ))}
-      </select>
+      </Select>
     </div>
   );
 };

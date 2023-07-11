@@ -1,4 +1,6 @@
 import React from "react";
+
+import { Button, Input } from "antd";
 import styles from "./styles.module.css";
 
 const { form, inputWrapper, actionWrapper } = styles;
@@ -11,7 +13,7 @@ export default function Form({
     <div className={form}>
       <div className={inputWrapper}>
         <label>Rows Number</label>
-        <input
+        <Input
           name="rowsNum"
           type="number"
           value={formData?.rowsNum}
@@ -21,7 +23,7 @@ export default function Form({
       </div>
       <div className={inputWrapper}>
         <label>Columns Number</label>
-        <input
+        <Input
           name="columnsNum"
           type="number"
           value={formData?.columnsNum}
@@ -30,7 +32,7 @@ export default function Form({
         />
       </div>
       <div className={actionWrapper}>
-        <button onClick={onClickHandler}>Generate</button>
+        <Button onClick={onClickHandler}>Generate</Button>
       </div>
     </div>
   );

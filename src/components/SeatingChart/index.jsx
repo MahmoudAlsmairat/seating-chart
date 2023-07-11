@@ -8,6 +8,7 @@ import {
   ImportOutlined,
   ExportOutlined,
   MenuOutlined,
+  EyeOutlined,
 } from "@ant-design/icons";
 import stage from "../assets/stage.avif";
 import Shape from "../Shape";
@@ -80,7 +81,15 @@ export default function SeatingChart() {
         {
           type: "stage",
           component: (
-            <img src={stage} alt="stage" style={{ objectFit: "cover" }} />
+            <img
+              src={stage}
+              alt="stage"
+              width="400px"
+              height="200px"
+              style={{
+                borderRadius: "10px",
+              }}
+            />
           ),
         },
       ],
@@ -95,8 +104,12 @@ export default function SeatingChart() {
           type: "entranceDoor",
           component: (
             <ImportOutlined
-              style={{ width: "50px", height: "50px" }}
-              size={1000}
+              style={{
+                fontSize: "55px",
+                color: "#1A5276",
+                backgroundColor: "white",
+                borderRadius: "10px",
+              }}
             />
           ),
         },
@@ -108,7 +121,19 @@ export default function SeatingChart() {
       ...prev,
       utils: [
         ...prev?.utils,
-        { type: "exitDoor", component: <ExportOutlined size={1000} /> },
+        {
+          type: "exitDoor",
+          component: (
+            <ExportOutlined
+              style={{
+                fontSize: "55px",
+                color: "#1A5276",
+                backgroundColor: "white",
+                borderRadius: "10px",
+              }}
+            />
+          ),
+        },
       ],
     }));
   };
@@ -139,7 +164,9 @@ export default function SeatingChart() {
         onClickHandler={onClickHandler}
       />
       <div className={seeChart}>
-        <button onClick={onClickSeeChart}>See Chart</button>
+        <Button onClick={onClickSeeChart} icon={<EyeOutlined />}>
+          See Chart
+        </Button>
       </div>
       <div className={centerContainer}>
         <div className={menuWrapper}>
