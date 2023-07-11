@@ -32,6 +32,24 @@ export default function Section({
       },
     },
   });
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
+        setShowMovable(false);
+      }
+    };
+
+    document.addEventListener("click", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
   const boxRef = useRef(null);
   const parentContainerStyle = {
     width: 700, // Set the width of the parent container
@@ -179,6 +197,7 @@ export default function Section({
         <div
           className={`target${id} ${container}`}
           id={`section-container${id}`}
+          ref={containerRef}
         >
           <span>{seats?.selectedTicket?.value}</span>
           {arrayOfSeats?.map((row, idx) => {
