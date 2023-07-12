@@ -3,35 +3,24 @@ import Seat from "../Seat";
 import Moveable from "react-moveable";
 import { Rnd } from "react-rnd";
 import SelectComponent from "../Select";
+import { Dropdown, Button, Menu } from "antd";
+import {
+  MoreOutlined,
+  CopyOutlined,
+  CloseCircleOutlined,
+} from "@ant-design/icons";
 import styles from "./styles.module.css";
 
-const { container, sectionRow } = styles;
+const { container, sectionRow, menuWrapper } = styles;
 export default function Section({
   seats,
   id,
   setSections = () => {},
-  sectionData,
+  deleteSection = () => {},
+  copyHandler = () => {},
 }) {
   const [showMovable, setShowMovable] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [rotationDeg, setRotationDeg] = useState(0);
-  const [translateX, setTranslateX] = useState(0);
-  const [translateY, setTranslateY] = useState(0);
-  const { rowsNum, columnsNum } = sectionData;
-  const [currentSectionData, setCurrentSectionData] = useState({
-    id,
-    type: "table or group",
-    numOfRows: rowsNum,
-    seatsPerRow: columnsNum,
-    selectedTicket: null,
-    position: {
-      rotation: 0,
-      translate: {
-        translateX: 0,
-        translateY: 0,
-      },
-    },
-  });
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -75,25 +64,25 @@ export default function Section({
 
   const handleRotate = ({ target, dist, transform }) => {
     target.style.transform = transform;
-    getRotationValue();
-    setCurrentSectionData((prev) => ({
-      ...prev,
-      position: {
-        rotation: rotationDeg,
-        translate: {
-          translateX,
-          translateY,
+    const rotationDeg = getRotationValue();
+    setSections((prev) => {
+      let currentSec = prev?.sections[id];
+      currentSec = {
+        ...currentSec,
+        position: {
+          ...currentSec.position,
+          rotation: rotationDeg,
         },
-      },
-    }));
+      };
+      prev.sections[id] = currentSec;
+      return prev;
+    });
   };
 
   const handleRotateEnd = ({ target, isDrag, clientX, clientY }) => {
     console.log("onRotateEnd", target, isDrag);
   };
-  // const sectionDivElement = document.getElementById(`${id}`);
-  // const width = sectionDivElement?.offsetWidth;
-  // const height = sectionDivElement?.offsetHeight;
+
   const arrayOfSeats = new Array(seats?.numOfRows)
     .fill()
     .map((_, rowIndex) =>
@@ -108,32 +97,20 @@ export default function Section({
 
   const getRotationValue = () => {
     const divElement = document.getElementById(`section-container${id}`);
+    let rotation = 0;
     if (divElement) {
       const transformValue = divElement.style.transform;
       const match = transformValue.match(/rotate\((-?\d+\.?\d*)deg\)/);
       if (match && match[1]) {
-        const rotation = parseFloat(match[1]);
-        setRotationDeg(rotation);
-        console.log("rotation", rotation);
+        rotation = parseFloat(match[1]);
       }
     }
-  };
-  const onDragging = () => {
-    console.log("onDragging");
-    getTranslateValues();
-    setCurrentSectionData((prev) => ({
-      ...prev,
-      position: {
-        rotation: rotationDeg,
-        translate: {
-          translateX,
-          translateY,
-        },
-      },
-    }));
+    return rotation;
   };
   const getTranslateValues = () => {
     const element = document.getElementById(`rnd-container${id}`);
+    let translateX = 0;
+    let translateY = 0;
     if (element) {
       const transformValue = element.style.transform;
       console.log("tttttt", transformValue);
@@ -141,32 +118,66 @@ export default function Section({
         /translate\(([-0-9.]+)px, ([-0-9.]+)px\)/
       );
       if (match && match[1] && match[2]) {
-        const translateX = parseFloat(match[1]);
-        const translateY = parseFloat(match[2]);
-        setTranslateX(translateX);
-        setTranslateY(translateY);
-        console.log("TranslateX:", translateX);
-        console.log("TranslateY:", translateY);
+        translateX = parseFloat(match[1]);
+        translateY = parseFloat(match[2]);
       }
     }
+    return { translateX, translateY };
+  };
+  const onDragging = () => {
+    const { translateX, translateY } = getTranslateValues();
+    setSections((prev) => {
+      let currentSec = prev?.sections[id];
+      currentSec = {
+        ...currentSec,
+        position: {
+          ...currentSec?.position,
+          translate: {
+            translateX,
+            translateY,
+          },
+        },
+      };
+      prev.sections[id] = currentSec;
+      console.log("currentSec", currentSec);
+      return prev;
+    });
   };
   const handleChange = (id, value) => {
-    setCurrentSectionData((prev) => ({
-      ...prev,
-      selectedTicket: { id, value },
-    }));
+    setSections((prev) => {
+      let currentSec = prev.sections[id];
+      currentSec = {
+        ...currentSec,
+        selectedTicket: { id, value },
+      };
+      prev.sections[id] = currentSec;
+      return prev;
+    });
   };
-  useEffect(() => {
-    setSections((prev) => ({
-      ...prev,
-      sections: {
-        ...prev.sections,
-        [id]: {
-          ...currentSectionData,
-        },
-      },
-    }));
-  }, [currentSectionData]);
+  const transformStyle = {
+    transform: `rotate(${seats?.position?.rotation}deg)`,
+    top: `${seats?.position?.translate?.translateY}px`,
+    left: `${seats?.position?.translate?.translateX}px`,
+  };
+  const handleMenuClick = (e) => {
+    const actionKey = e.key;
+    return (
+      {
+        delete: deleteSection,
+        copy: copyHandler,
+      }[actionKey](id) || null
+    );
+  };
+  const menu = (
+    <Menu onClick={handleMenuClick}>
+      <Menu.Item key="delete">
+        <CloseCircleOutlined /> Delete
+      </Menu.Item>
+      <Menu.Item key="copy">
+        <CopyOutlined /> Copy
+      </Menu.Item>
+    </Menu>
+  );
   return (
     <>
       <Moveable
@@ -175,6 +186,7 @@ export default function Section({
         draggable={true}
         throttleDrag={0}
         rotatable={true}
+        keepRatio={true}
         throttleRotate={0}
         onRotateStart={handleRotateStart}
         onRotate={handleRotate}
@@ -198,7 +210,13 @@ export default function Section({
           className={`target${id} ${container}`}
           id={`section-container${id}`}
           ref={containerRef}
+          style={transformStyle}
         >
+          <div className={menuWrapper}>
+            <Dropdown overlay={menu}>
+              <Button icon={<MoreOutlined />}></Button>
+            </Dropdown>
+          </div>
           <span>{seats?.selectedTicket?.value}</span>
           {arrayOfSeats?.map((row, idx) => {
             return (

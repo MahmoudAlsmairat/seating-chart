@@ -19,6 +19,7 @@ export default function Form({
           value={formData?.rowsNum}
           onChange={changeHandler}
           placeholder="rows"
+          min={1}
         />
       </div>
       <div className={inputWrapper}>
@@ -29,6 +30,18 @@ export default function Form({
           value={formData?.columnsNum}
           onChange={changeHandler}
           placeholder="column"
+          min={1}
+        />
+      </div>
+      <div className={inputWrapper}>
+        <label>Sections Number</label>
+        <Input
+          name="sectionsNum"
+          type="number"
+          value={formData?.sectionsNum}
+          onChange={changeHandler}
+          placeholder="Sections number"
+          min={1}
         />
       </div>
       <div className={actionWrapper}>

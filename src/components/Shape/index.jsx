@@ -1,17 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import Moveable from "react-moveable";
 import { Rnd } from "react-rnd";
+import { CloseCircleFilled } from "@ant-design/icons";
 import styles from "./styles.module.css";
 
-const { container, sectionRow } = styles;
+const { container, closeIcon } = styles;
 
 export default function Shape({ component, id, setSections = () => {} }) {
   const [showMovable, setShowMovable] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [rotationDeg, setRotationDeg] = useState(0);
-  const [translateX, setTranslateX] = useState(0);
-  const [translateY, setTranslateY] = useState(0);
-
   const boxRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -55,15 +52,12 @@ export default function Shape({ component, id, setSections = () => {} }) {
 
   const handleRotate = ({ target, dist, transform }) => {
     target.style.transform = transform;
-    getRotationValue();
+    const rotationDeg = getRotationValue();
     setSections((prev) => {
       const currentUtils = prev?.utils[id];
       currentUtils.position = {
         rotation: rotationDeg,
-        translate: {
-          translateX,
-          translateY,
-        },
+        ...currentUtils.position,
       };
       const utils = [...prev?.utils];
       utils[id] = currentUtils;
@@ -79,24 +73,39 @@ export default function Shape({ component, id, setSections = () => {} }) {
   };
 
   const getRotationValue = () => {
-    const divElement = document.getElementById(`shape-section${id}`);
+    const divElement = document.getElementById(`section-container${id}`);
+    let rotation = 0;
     if (divElement) {
       const transformValue = divElement.style.transform;
       const match = transformValue.match(/rotate\((-?\d+\.?\d*)deg\)/);
       if (match && match[1]) {
-        const rotation = parseFloat(match[1]);
-        setRotationDeg(rotation);
-        console.log("rotation", rotation);
+        rotation = parseFloat(match[1]);
       }
     }
+    return rotation;
+  };
+  const getTranslateValues = () => {
+    const element = document.getElementById(`rnd-container${id}`);
+    let translateX = 0;
+    let translateY = 0;
+    if (element) {
+      const transformValue = element.style.transform;
+      const match = transformValue.match(
+        /translate\(([-0-9.]+)px, ([-0-9.]+)px\)/
+      );
+      if (match && match[1] && match[2]) {
+        translateX = parseFloat(match[1]);
+        translateY = parseFloat(match[2]);
+      }
+    }
+    return { translateX, translateY };
   };
   const onDragging = () => {
-    console.log("onDragging");
-    getTranslateValues();
+    const { translateX, translateY } = getTranslateValues();
     setSections((prev) => {
       const currentUtils = prev?.utils[id];
       currentUtils.position = {
-        rotation: rotationDeg,
+        ...currentUtils.position,
         translate: {
           translateX,
           translateY,
@@ -110,22 +119,13 @@ export default function Shape({ component, id, setSections = () => {} }) {
       };
     });
   };
-  const getTranslateValues = () => {
-    const element = document.getElementById(`rnd-container-shape${id}`);
-    if (element) {
-      const transformValue = element.style.transform;
-      const match = transformValue.match(
-        /translate\(([-0-9.]+)px, ([-0-9.]+)px\)/
-      );
-      if (match && match[1] && match[2]) {
-        const translateX = parseFloat(match[1]);
-        const translateY = parseFloat(match[2]);
-        setTranslateX(translateX);
-        setTranslateY(translateY);
-        console.log("TranslateX:", translateX);
-        console.log("TranslateY:", translateY);
-      }
-    }
+
+  const handleRemoveSection = () => {
+    setSections((prev) => {
+      const prevUtils = [...prev?.utils];
+      prevUtils.splice(id, 1);
+      return { ...prev, utils: prevUtils };
+    });
   };
   return (
     <>
@@ -152,7 +152,6 @@ export default function Shape({ component, id, setSections = () => {} }) {
         onDragStart={() => setIsDragging(true)}
         onDragStop={onDragStop}
         onDrag={onDragging}
-        enableResizing={true}
       >
         <div
           className={`targetShape${id} ${container}`}
@@ -163,6 +162,9 @@ export default function Shape({ component, id, setSections = () => {} }) {
           }}
           ref={containerRef}
         >
+          <div className={closeIcon} onClick={handleRemoveSection}>
+            <CloseCircleFilled />
+          </div>
           {component}
         </div>
       </Rnd>
