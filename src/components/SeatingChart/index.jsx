@@ -156,7 +156,7 @@ export default function SeatingChart() {
       ],
     }));
   };
-
+  console.log("ssection", sections);
   const handleMenuClick = (e) => {
     const actionKey = e.key;
     return (
