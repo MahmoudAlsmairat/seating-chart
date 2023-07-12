@@ -18,7 +18,12 @@ export default function ViewSection({ seats, id }) {
 
   return (
     <div className={styles.container} style={transformStyle}>
-      <span>{seats?.selectedTicket?.value}</span>
+      <div className={styles.ticketsContainer}>
+        {seats?.selectedTickets?.length > 0 &&
+          seats?.selectedTickets?.map((ticket) => {
+            return <div key={ticket?.id}>{ticket?.value}</div>;
+          })}
+      </div>
       {arrayOfSeats?.map((row, idx) => {
         return (
           <div key={idx} className={styles.sectionRow} id={id}>
