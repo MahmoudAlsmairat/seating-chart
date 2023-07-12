@@ -11,7 +11,7 @@ import {
 } from "@ant-design/icons";
 import styles from "./styles.module.css";
 
-const { container, sectionRow, menuWrapper } = styles;
+const { container, sectionRow, menuWrapper, ticketsContainer } = styles;
 export default function Section({
   seats,
   id,
@@ -21,6 +21,7 @@ export default function Section({
 }) {
   const [showMovable, setShowMovable] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [selectedTickets, setSelectedTickets] = useState({});
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -113,7 +114,6 @@ export default function Section({
     let translateY = 0;
     if (element) {
       const transformValue = element.style.transform;
-      console.log("tttttt", transformValue);
       const match = transformValue.match(
         /translate\(([-0-9.]+)px, ([-0-9.]+)px\)/
       );
@@ -139,26 +139,20 @@ export default function Section({
         },
       };
       prev.sections[id] = currentSec;
-      console.log("currentSec", currentSec);
       return prev;
     });
   };
-  const handleChange = (idx, value) => {
+  const handleChange = (selectedTicketsData) => {
+    setSelectedTickets(selectedTicketsData);
     setSections((prev) => {
       let currentSec = prev.sections[id];
       currentSec = {
         ...currentSec,
-        selectedTicket: { id:idx, value },
+        selectedTickets: selectedTicketsData,
       };
       prev.sections[id] = currentSec;
-      console.log("prev", prev);
       return prev;
     });
-  };
-  const transformStyle = {
-    transform: `rotate(${seats?.position?.rotation}deg)`,
-    top: `${seats?.position?.translate?.translateY}px`,
-    left: `${seats?.position?.translate?.translateX}px`,
   };
   const handleMenuClick = (e) => {
     const actionKey = e.key;
@@ -211,14 +205,19 @@ export default function Section({
           className={`target${id} ${container}`}
           id={`section-container${id}`}
           ref={containerRef}
-          style={transformStyle}
         >
           <div className={menuWrapper}>
             <Dropdown overlay={menu}>
               <Button icon={<MoreOutlined />}></Button>
             </Dropdown>
           </div>
-          <span>{seats?.selectedTicket?.value}</span>
+          <div className={ticketsContainer}>
+            {selectedTickets?.length > 0 &&
+              selectedTickets?.map((ticket) => {
+                return <div key={ticket?.id}>{ticket?.value}</div>;
+              })}
+          </div>
+
           {arrayOfSeats?.map((row, idx) => {
             return (
               <div

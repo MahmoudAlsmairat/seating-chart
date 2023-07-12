@@ -18,8 +18,23 @@
   flex-wrap: wrap;
   flex-direction: row;
   gap: 10px;
+  justify-content: center;
 }
 .seat {
   border: 1px solid black;
   padding: 10px;
+}
+.ticketsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  width: 150px;
+}
+
+.ticketsContainer div {
+  font-size: 14px;
+  width: 50px;
+}
+
+.ticketsContainer div:not(:last-child)::after {
+  content: ",";
 }

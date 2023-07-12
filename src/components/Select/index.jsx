@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Select } from "antd";
+import styles from "./styles.module.css";
 
 const { Option } = Select;
-
+const { selectContainer } = styles;
 const SelectComponent = ({ options, defaultValue, onChange }) => {
   const defaultOption = {
     id: 0,
@@ -10,31 +11,37 @@ const SelectComponent = ({ options, defaultValue, onChange }) => {
     label: `${defaultValue}`,
   };
 
-  const [selectedOption, setSelectedOption] = useState(defaultOption.value);
+  const [selectedOptions, setSelectedOptions] = useState([]);
 
-  const handleSelectChange = (value, option) => {
-    setSelectedOption(value);
-    const selectedOption = options.find((o) => o.value === value);
-    onChange(selectedOption.id, selectedOption.value);
+  const handleSelectChange = (selectedValues) => {
+    setSelectedOptions(selectedValues);
+    const selectedItems = options.filter((option) =>
+      selectedValues.includes(option.value)
+    );
+    const selectedTicketArray = selectedItems.map((item) => ({
+      id: item.id,
+      value: item.value,
+    }));
+    onChange(selectedTicketArray);
   };
 
   return (
-    <div>
-      <Select
-        onChange={handleSelectChange}
-        value={selectedOption}
-        defaultValue={defaultOption.value}
-      >
-        <Option value={defaultOption.value} disabled>
-          {defaultOption.label}
+    <Select
+      className={selectContainer}
+      onChange={handleSelectChange}
+      value={selectedOptions}
+      mode="multiple"
+      placeholder={defaultOption.label}
+    >
+      <Option value={defaultOption.value} disabled>
+        {defaultOption.label}
+      </Option>
+      {options.map((option) => (
+        <Option key={option.id} value={option.value}>
+          {option.label}
         </Option>
-        {options.map((option) => (
-          <Option key={option.idTicket} value={option.value}>
-            {option.label}
-          </Option>
-        ))}
-      </Select>
-    </div>
+      ))}
+    </Select>
   );
 };
 
