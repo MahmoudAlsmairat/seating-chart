@@ -143,14 +143,15 @@ export default function Section({
       return prev;
     });
   };
-  const handleChange = (id, value) => {
+  const handleChange = (idx, value) => {
     setSections((prev) => {
       let currentSec = prev.sections[id];
       currentSec = {
         ...currentSec,
-        selectedTicket: { id, value },
+        selectedTicket: { id:idx, value },
       };
       prev.sections[id] = currentSec;
+      console.log("prev", prev);
       return prev;
     });
   };
