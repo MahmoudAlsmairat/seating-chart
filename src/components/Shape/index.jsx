@@ -53,11 +53,12 @@ export default function Shape({ component, id, setSections = () => {} }) {
   const handleRotate = ({ target, dist, transform }) => {
     target.style.transform = transform;
     const rotationDeg = getRotationValue();
+    console.log("rotationDeg", rotationDeg);
     setSections((prev) => {
       const currentUtils = prev?.utils[id];
       currentUtils.position = {
-        rotation: rotationDeg,
         ...currentUtils.position,
+        rotation: rotationDeg,
       };
       const utils = [...prev?.utils];
       utils[id] = currentUtils;
@@ -73,7 +74,7 @@ export default function Shape({ component, id, setSections = () => {} }) {
   };
 
   const getRotationValue = () => {
-    const divElement = document.getElementById(`section-container${id}`);
+    const divElement = document.getElementById(`shape-section${id}`);
     let rotation = 0;
     if (divElement) {
       const transformValue = divElement.style.transform;
@@ -82,10 +83,11 @@ export default function Shape({ component, id, setSections = () => {} }) {
         rotation = parseFloat(match[1]);
       }
     }
+    console.log("rotation", rotation);
     return rotation;
   };
   const getTranslateValues = () => {
-    const element = document.getElementById(`rnd-container${id}`);
+    const element = document.getElementById(`rnd-container-shape${id}`);
     let translateX = 0;
     let translateY = 0;
     if (element) {
