@@ -1,13 +1,18 @@
 .container {
   width: fit-content;
   display: flex;
-  border: 1px solid #1A5276;
+  border: 1px solid #1a5276;
   padding: 10px;
   flex-direction: column;
   align-items: center;
   gap: 10px;
-background-color: #D4E6F1;
-border-radius: 10px;
+  background-color: #d4e6f1;
+  border-radius: 10px;
+}
+.menuWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
 }
 .sectionRow {
   width: 100%;

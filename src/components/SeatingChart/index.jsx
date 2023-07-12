@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Rnd } from "react-rnd";
 import { useNavigate } from "react-router-dom";
 import Form from "../Form";
@@ -10,6 +10,7 @@ import {
   MenuOutlined,
   EyeOutlined,
 } from "@ant-design/icons";
+import { v4 as uuidv4 } from "uuid";
 import stage from "../assets/stage.avif";
 import Shape from "../Shape";
 import styles from "./styles.module.css";
@@ -24,10 +25,11 @@ const {
 
 export default function SeatingChart() {
   const [formData, setFormData] = useState({
-    rowsNum: 0,
-    columnsNum: 0,
+    rowsNum: 1,
+    columnsNum: 1,
+    sectionsNum: 1,
   });
-  const [sections, setSections] = useState({ utils: [], sections: {} });
+  const [sections, setSections] = useState({ utils: [], sections: [] });
   const [pageHeight, setPageHeight] = useState(500);
   const [numOfSections, setNumOfSections] = useState(0);
   const navigate = useNavigate();
@@ -38,28 +40,24 @@ export default function SeatingChart() {
       [name]: +value,
     }));
   };
-  console.log("finalObj", sections);
   const onClickHandler = () => {
-    const { rowsNum, columnsNum } = formData;
+    const { rowsNum, columnsNum, sectionsNum } = formData;
     setNumOfSections(numOfSections + 1);
+    const newSections = new Array(sectionsNum).fill().map((_, rowIndex) => ({
+      position: {
+        rotation: 0,
+        translate: { translateX: 0, translateY: 0 },
+      },
+      id: uuidv4(),
+      type: "table or group",
+      ticketName: "",
+      ticketId: 1,
+      numOfRows: rowsNum,
+      seatsPerRow: columnsNum,
+    }));
     setSections((prev) => ({
       ...prev,
-      sections: {
-        ...prev?.sections,
-        [numOfSections + 1]: {
-          position: {
-            top: 151,
-            rotate: 151,
-            left: 121,
-          },
-          id: "",
-          type: "table or group",
-          ticketName: "",
-          ticketId: 1,
-          numOfRows: rowsNum,
-          seatsPerRow: columnsNum,
-        },
-      },
+      sections: [...prev?.sections, ...newSections],
     }));
   };
 
@@ -73,6 +71,43 @@ export default function SeatingChart() {
     localStorage.setItem("sections", JSON.stringify(sections));
     navigate("/chart");
   };
+  const getShape = (key) => {
+    return (
+      {
+        stage: (
+          <img
+            src={stage}
+            alt="stage"
+            width="400px"
+            height="200px"
+            style={{
+              borderRadius: "10px",
+            }}
+          />
+        ),
+        entranceDoor: (
+          <ImportOutlined
+            style={{
+              fontSize: "55px",
+              color: "#1A5276",
+              backgroundColor: "white",
+              borderRadius: "10px",
+            }}
+          />
+        ),
+        exitDoor: (
+          <ExportOutlined
+            style={{
+              fontSize: "55px",
+              color: "#1A5276",
+              backgroundColor: "white",
+              borderRadius: "10px",
+            }}
+          />
+        ),
+      }[key] || null
+    );
+  };
   const addStageHandler = () => {
     setSections((prev) => ({
       ...prev,
@@ -80,17 +115,11 @@ export default function SeatingChart() {
         ...prev?.utils,
         {
           type: "stage",
-          component: (
-            <img
-              src={stage}
-              alt="stage"
-              width="400px"
-              height="200px"
-              style={{
-                borderRadius: "10px",
-              }}
-            />
-          ),
+          id: uuidv4(),
+          position: {
+            rotation: 0,
+            translate: { translateX: 0, translateY: 0 },
+          },
         },
       ],
     }));
@@ -102,16 +131,11 @@ export default function SeatingChart() {
         ...prev?.utils,
         {
           type: "entranceDoor",
-          component: (
-            <ImportOutlined
-              style={{
-                fontSize: "55px",
-                color: "#1A5276",
-                backgroundColor: "white",
-                borderRadius: "10px",
-              }}
-            />
-          ),
+          id: uuidv4(),
+          position: {
+            rotation: 0,
+            translate: { translateX: 0, translateY: 0 },
+          },
         },
       ],
     }));
@@ -123,16 +147,11 @@ export default function SeatingChart() {
         ...prev?.utils,
         {
           type: "exitDoor",
-          component: (
-            <ExportOutlined
-              style={{
-                fontSize: "55px",
-                color: "#1A5276",
-                backgroundColor: "white",
-                borderRadius: "10px",
-              }}
-            />
-          ),
+          id: uuidv4(),
+          position: {
+            rotation: 0,
+            translate: { translateX: 0, translateY: 0 },
+          },
         },
       ],
     }));
@@ -155,7 +174,22 @@ export default function SeatingChart() {
       <Menu.Item key="addExitDoor">Add Exit Door</Menu.Item>
     </Menu>
   );
+  const deleteSection = (id) => {
+    setSections((prev) => {
+      const prevSections = [...prev?.sections];
+      prevSections.splice(id, 1);
+      return { ...prev, sections: prevSections };
+    });
+  };
 
+  const copyHandler = (id) => {
+    const copedItem = sections?.sections[id];
+    console.log("copedItem", copedItem);
+    setSections((prev) => ({
+      ...prev,
+      sections: [...prev.sections, { ...copedItem, id: uuidv4() }],
+    }));
+  };
   return (
     <div className={container} style={{ height: `${pageHeight}px` }}>
       <Form
@@ -171,9 +205,7 @@ export default function SeatingChart() {
       <div className={centerContainer}>
         <div className={menuWrapper}>
           <Dropdown overlay={menu}>
-            <Button>
-              <MenuOutlined />
-            </Button>
+            <Button icon={<MenuOutlined />}></Button>
           </Dropdown>
         </div>
         <div className={centerContent}>
@@ -200,19 +232,23 @@ export default function SeatingChart() {
             {sections?.utils?.map((item, idx) => {
               return (
                 <Shape
-                  component={item?.component}
+                  key={item?.id}
+                  component={getShape(item?.type)}
                   id={idx}
                   setSections={setSections}
                 />
               );
             })}
-            {Object?.keys(sections?.sections || {})?.map((item, id) => {
+            {sections?.sections?.map((item, id) => {
               return (
                 <Section
-                  seats={sections?.sections[item]}
-                  id={item}
+                  key={item?.id}
+                  seats={item}
+                  id={id}
                   sectionData={formData}
                   setSections={setSections}
+                  deleteSection={deleteSection}
+                  copyHandler={copyHandler}
                 />
               );
             })}
