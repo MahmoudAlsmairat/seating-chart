@@ -3,7 +3,7 @@ import Seat from "../Seat";
 
 import styles from "./styles.module.css";
 
-export default function ViewSection({ seats, id }) {
+export default function ViewSection({ seats, id, selectedTickets, position }) {
   const arrayOfSeats = new Array(seats?.numOfRows)
     .fill()
     .map((_, rowIndex) =>
@@ -11,16 +11,16 @@ export default function ViewSection({ seats, id }) {
     );
 
   const transformStyle = {
-    transform: `rotate(${seats?.position?.rotation}deg)`,
-    top: `${seats?.position?.translate?.translateY}px`,
-    left: `${seats?.position?.translate?.translateX}px`,
+    transform: `rotate(${position?.rotation}deg)`,
+    top: `${position?.translate?.translateY}px`,
+    left: `${position?.translate?.translateX}px`,
   };
 
   return (
     <div className={styles.container} style={transformStyle}>
       <div className={styles.ticketsContainer}>
-        {seats?.selectedTickets?.length > 0 &&
-          seats?.selectedTickets?.map((ticket) => {
+        {selectedTickets?.length > 0 &&
+          selectedTickets?.map((ticket) => {
             return <div key={ticket?.id}>{ticket?.value}</div>;
           })}
       </div>
