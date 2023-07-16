@@ -137,6 +137,7 @@ const SeatElement = ({
         onDragStart={() => setIsDragging(true)}
         onDragStop={(e, d) => onDragStop(e, d, boxRef, setIsDragging)}
         onDrag={() => onDragging(setSections, id)}
+        enableResizing={false}
       >
         <div
           className={`targetShape${id} ${container} ${
