@@ -1,0 +1,13 @@
+.seat,.hoverSeat{
+  border: 1px solid #1A5276;
+  border-radius: 2px;
+  padding: 10px;
+}
+
+.reservedSeat{
+  background-color: #3498DB;
+}
+.hoverSeat:hover{
+  background-color: #3498db46
+}
+

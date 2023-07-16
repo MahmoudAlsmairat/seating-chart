@@ -1,0 +1,33 @@
+
+.container{
+padding: 10px;
+}
+.menuWrapper{
+  width: 99%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom:10px;
+}
+.centerContainer {
+  position: relative;
+
+  margin-top: 30px;
+}
+
+.centerContent {
+  position: absolute;
+  left: 1%;
+}
+.parentContainer {
+  /* background-image: url('../assets/parentBackground.jpg');
+  background-size: contain; */
+  background-color: rgb(225, 225, 225);
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
+}
+
+
+.seeChart{
+  margin: 20px auto;
+  width: 100px;
+}

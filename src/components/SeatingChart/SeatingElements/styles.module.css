@@ -1,0 +1,62 @@
+.container {
+  width: fit-content;
+  display: flex;
+  border: 1px solid #1a5276;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: #d4e6f1;
+  border-radius: 10px;
+  position: relative;
+}
+.padding {
+  padding: 10px;
+}
+.menuWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+.sectionRow {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+}
+.seat {
+  border: 1px solid black;
+  padding: 10px;
+}
+.ticketsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  width: 150px;
+}
+
+.ticketsContainer div {
+  font-size: 14px;
+  width: 50px;
+}
+
+.ticketsContainer div:not(:last-child)::after {
+  content: ",";
+}
+
+.closeIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  cursor: context-menu;
+  color: red;
+  background-color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  z-index: 9999;
+}
